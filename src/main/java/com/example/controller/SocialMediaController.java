@@ -2,12 +2,8 @@ package com.example.controller;
 
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
-import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 //import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +12,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
@@ -79,11 +74,11 @@ public class SocialMediaController {
     @PostMapping("/messages")
     public ResponseEntity <Message> createMessage(@RequestBody Message message){  
         Message newMessage = messageService.createMessage(message);
-        if(newMessage != null){
-            return ResponseEntity.status(HttpStatus.OK).body(newMessage);
+        if(newMessage == null){
+           return ResponseEntity.status(400).build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-       
+        return ResponseEntity.status(HttpStatus.OK).body(newMessage);
+        
     }
 
 
@@ -108,16 +103,16 @@ public class SocialMediaController {
           return null;
     }
 @PatchMapping("/messages/{message_id}")
-public ResponseEntity <Integer> updatedMessage(@PathVariable (value = "message_id") Integer message_id, @RequestBody String message_text){
+public ResponseEntity <Integer> updatedMessage(@PathVariable (value = "message_id") Integer message_id, @RequestBody Message message_text){
       Integer updatedMessage = messageService.updateMessage(message_id, message_text);
-      if(updatedMessage > 0){
-        return ResponseEntity.status(200).body(updatedMessage);
+      if(updatedMessage == 1){
+        return ResponseEntity.status(200).body(1);
       }
-        return ResponseEntity.status(400).body(null);
+        return ResponseEntity.status(400).body(0);
     }
 
 @GetMapping("accounts/{account_id}/messages")
-public ResponseEntity <List<Message>> retrieveAllMessagesByUser(@PathVariable Integer account_id){
+public ResponseEntity <List<Message>> retrieveAllMessagesByUser(@PathVariable("account_id") List<Integer> account_id){
      List <Message> message = messageService.retrieveAllMessagesByUser(account_id);
     return ResponseEntity.status(HttpStatus.OK).body(message);
 }

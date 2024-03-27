@@ -74,7 +74,7 @@ public class Message {
     }
     /**
      * Properly named getters and setters are necessary for Jackson ObjectMapper to work. You may use them as well.
-     * @param message_id
+     * @param message_text2
      */
     public void setMessage_id(Integer message_id) {
         this.message_id = message_id;
